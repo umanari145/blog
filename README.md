@@ -36,8 +36,6 @@ node load_contents.js
 # データ全削除
 node delete_contents.js
 
-# 一括
-
 ```
 
 ### app(lambda)
@@ -50,6 +48,6 @@ https://qiita.com/eiji-noguchi/items/e226ed7b8da2cd85a06a
 ```
 cd /root
 # -t timeout・・秒数　-e 環境変数
-python-lambda-local -f handler lambda_function.py event.json -e env.json -t 10
+python-lambda-local -f handler lambda_function.py event/(イベントファイル名).json -e env.json -t 10
 ```
 

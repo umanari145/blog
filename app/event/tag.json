@@ -1,17 +1,13 @@
 {
-    "resource": "/blog/{id}",
-    "path": "/blog/12345",
+    "resource": "/blog",
+    "path": "/tag/認証/",
     "httpMethod": "GET",
     "headers": {
     },
     "multiValueHeaders": {  
     },
     "queryStringParameters": {
-        "fuga": "fugaga",
-        "hoge": "hogege"
-    },
-    "pathParameters": {
-      "id": "6725cff54c1b37cfd0dbe952"
+        "title": "Enumでメソッドの実装"
     },
     "stageVariables": null,
     "requestContext": {
