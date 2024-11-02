@@ -34,5 +34,22 @@ Connection to MongoDB closed
 node load_contents.js
 
 # データ全削除
-node deleteS_contents.js
+node delete_contents.js
+
+# 一括
+
 ```
+
+### app(lambda)
+
+https://www.distant-view.co.jp/column/6484/<br>
+https://qiita.com/eiji-noguchi/items/e226ed7b8da2cd85a06a
+
+
+ローカルデバッグ
+```
+cd /root
+# -t timeout・・秒数　-e 環境変数
+python-lambda-local -f handler lambda_function.py event.json -e env.json -t 10
+```
+

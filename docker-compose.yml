@@ -1,15 +1,17 @@
 version: "3"
 services:
-  python3:
-      container_name: "blog_python"
-      build:
-          context: "./docker/python"
-          dockerfile: "Dockerfile"
-      tty: true
-      volumes:
-          - .:/root
-      networks:
-        - blog_node          
+  python_lambda:
+    container_name: "blog_python_lambda"
+    build:
+        context: "."
+        dockerfile: "./docker/python/Dockerfile"
+    tty: true
+    volumes:
+        - ./app:/root
+    ports:
+      - 9000:8080
+    networks:
+      - blog_node          
   node:
     container_name: blog_node
     build:
@@ -21,6 +23,7 @@ services:
       - 3002:3002
       - 6006:6006
     tty: true
+    # mongoも入れるので共有を./直下にする
     volumes:
       - .:/app
     networks:
