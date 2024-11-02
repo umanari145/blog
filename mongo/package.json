@@ -1,0 +1,12 @@
+{
+    "name": "load blog",
+    "type": "module",
+    "version": "0.0.1",
+    "scripts": {
+        "dev": "test"
+    },
+    "dependencies": {
+        "js-yaml": "^4.1.0",
+        "mongodb": "^6.5.0"
+    }
+}

@@ -1,0 +1,7 @@
+# See 
+# dependencies
+/**/node_modules
+/**/output
+/**/output_test
+.DS_Store
+.env*
