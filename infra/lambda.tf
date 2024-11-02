@@ -1,26 +1,50 @@
+data "archive_file" "archive_zip" {
+  type        = "zip"
+  source_dir  = "../app"
+  output_path = "../app/lambda_function.zip"
+}
+
 # Define the Lambda function
 resource "aws_lambda_function" "blog_lambda" {
-  filename         = "path/to/your/lambda_function.zip" # Update with the path to your Lambda package
+  filename         = data.archive_file.archive_zip.output_path
   function_name    = "blogLambdaFunction"
   handler          = "app.lambda_handler"
   runtime          = "python3.12"
   memory_size      = 128
   timeout          = 20
   architectures    = ["x86_64"]
-
-  # Enable X-Ray tracing
-  tracing_config {
-    mode = "Active"
-  }
-
-  # Log settings
-  environment {
-    variables = {
-      LogFormat = "JSON"
-    }
-  }
+  source_code_hash = filebase64sha256(data.archive_file.archive_zip.output_path)
   # Define Lambda execution role
   role = aws_iam_role.lambda_exec_role.arn
+}
+
+resource "aws_iam_policy" "log_policy" {
+  name        = "log_policy"
+  path        = "/"
+  description = "IAM policy for logging from a lambda_app"
+
+  policy = jsonencode(
+    {
+      "Statement" : [
+        {
+          "Action" : "logs:CreateLogGroup",
+          "Effect" : "Allow",
+          "Resource" : "arn:aws:logs:${var.region}:${var.aws_account_id}:*"
+        },
+        {
+          "Action" : [
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+          ],
+          "Effect" : "Allow",
+          "Resource" : [
+            "arn:aws:logs:${var.region}:${var.aws_account_id}:log-group:/aws/lambda/${aws_lambda_function.blog_lambda.function_name}:*"
+          ]
+        }
+      ],
+      "Version" : "2012-10-17"
+    }
+  )
 }
 
 
@@ -40,12 +64,19 @@ resource "aws_iam_role" "lambda_exec_role" {
       }
     ]
   })
+}
 
-  # Attach necessary policies
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-    "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+# managed_policyのattachはこれで
+resource "aws_iam_role_policy_attachments_exclusive" "managed_policy" {
+  role_name      = aws_iam_role.lambda_exec_role.name
+  policy_arns = [
+    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   ]
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
+  role       = aws_iam_role.lambda_exec_role.name
+  policy_arn = aws_iam_policy.log_policy.arn
 }
 
 # Lambda permission for API Gateway to invoke

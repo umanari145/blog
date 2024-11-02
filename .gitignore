@@ -8,3 +8,5 @@
 /app/.cache/*
 /app/__pycache__
 /**/.bash_history
+/**/*.tfvars
+/**/.terraform*

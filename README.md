@@ -51,3 +51,18 @@ cd /root
 python-lambda-local -f handler lambda_function.py event/(イベントファイル名).json -e env.json -t 10
 ```
 
+### infra(terraform)
+
+```
+#最初だけ
+terraform init
+
+# 確認
+terraform plan -var-file terraform.tfvars
+
+# 構築
+terraform apply -var-file terraform.tfvars
+
+# 削除
+terraform plan -var-file terraform.tfvars
+```
