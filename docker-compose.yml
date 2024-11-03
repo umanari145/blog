@@ -25,9 +25,6 @@ services:
     # mongoも入れるので共有を./直下にする
     volumes:
       - .:/app
-    entrypoint: >
-      sh -c "
-        cd /app/mongo && node init/createDB.js && node load_contents.js"
     networks:
       - blog_node
     depends_on:
