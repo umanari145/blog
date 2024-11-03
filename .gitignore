@@ -10,3 +10,4 @@
 /**/.bash_history
 /**/*.tfvars
 /**/.terraform*
+/**/aws_configure.txt

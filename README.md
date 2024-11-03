@@ -64,5 +64,21 @@ terraform plan -var-file terraform.tfvars
 terraform apply -var-file terraform.tfvars
 
 # 削除
-terraform plan -var-file terraform.tfvars
+terraform destroy -var-file terraform.tfvars
 ```
+
+### lambda & ecr terraform
+ 
+https://zenn.dev/ikedam/articles/4d0646c8effb1c
+
+https://qiita.com/suzuki-navi/items/47d7093278ee9f4d1147
+
+https://thaim.hatenablog.jp/entry/2021/07/05/081325
+
+https://qiita.com/neruneruo/items/d395fef4929c9486ec0a#ecr
+
+https://qiita.com/hayaosato/items/d6049cf68c84a26845d2
+
+https://qiita.com/wwalpha/items/4a3e4f1f54e896633c01
+
+

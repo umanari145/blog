@@ -1,19 +1,10 @@
-data "archive_file" "archive_zip" {
-  type        = "zip"
-  source_dir  = "../app"
-  output_path = "../app/lambda_function.zip"
-}
-
 # Define the Lambda function
 resource "aws_lambda_function" "blog_lambda" {
-  filename         = data.archive_file.archive_zip.output_path
   function_name    = "blogLambdaFunction"
-  handler          = "lambda_function.handler"
-  runtime          = "python3.12"
-  memory_size      = 128
-  timeout          = 20
-  architectures    = ["x86_64"]
-  source_code_hash = filebase64sha256(data.archive_file.archive_zip.output_path)
+  package_type     = "Image"
+  image_uri        = "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/blog-lambda:latest"
+  publish       = true
+
   # Define Lambda execution role
   role = aws_iam_role.lambda_exec_role.arn
 }
@@ -42,6 +33,11 @@ resource "aws_iam_role_policy_attachments_exclusive" "managed_policy" {
   policy_arns = [
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   ]
+}
+
+resource "aws_cloudwatch_log_group" "log_group" {
+  name              = "/aws/lambda/${aws_lambda_function.blog_lambda.function_name}"
+  retention_in_days = 30
 }
 
 # Lambda permission for API Gateway to invoke
