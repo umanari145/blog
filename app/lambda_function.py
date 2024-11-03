@@ -34,29 +34,30 @@ def check_url(path):
     pathes = path.split("/")
     query = {}
     where = {}
-    if pathes[1] is not None:
-        if pathes[1] == "category":
+    print(pathes)
+    if pathes[2] is not None:
+        if pathes[2] == "category":
             # category
             where["categories"] = {
-                "$in":[pathes[2]]
+                "$in":[pathes[3]]
             }
             query["mode"] = "index"
-        elif pathes[1] == "tag":
+        elif pathes[2] == "tag":
             # tag
             where["tags"] = {
-                "$in":[pathes[2]]
+                "$in":[pathes[3]]
             } 
             query["mode"] = "index"
-        elif re.search(r'\d{4}', pathes[1]) and re.search(r'\d{2}', pathes[2]) and pathes[3] == "":
+        elif re.search(r'\d{4}', pathes[2]) and re.search(r'\d{2}', pathes[3]) and pathes[4] == "":
             # 日付
             where["date"] = {
                 "$regex": f'{pathes[1]}-{pathes[2]}.*' ,
                 "$options": "s"
             }
             query["mode"] = "index"
-        elif re.search(r'\d{4}', pathes[1]) and re.search(r'\d{2}', pathes[2]) and re.search(r'\d{2}', pathes[3]) and pathes[4] != "":
-            where["date"] = "{0}-{1}-{2}".format(pathes[1], pathes[2], pathes[3])
-            where["title"] = pathes[4]
+        elif re.search(r'\d{4}', pathes[2]) and re.search(r'\d{2}', pathes[3]) and re.search(r'\d{2}', pathes[4]) and pathes[5] != "":
+            where["date"] = "{0}-{1}-{2}".format(pathes[2], pathes[3], pathes[4])
+            where["title"] = pathes[5]
             query["mode"] = "show"
         else:
             #要改造

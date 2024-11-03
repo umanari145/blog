@@ -1,46 +1,6 @@
 {
     "resource": "/blog",
-    "path": "/tag/認証/",
-    "httpMethod": "GET",
-    "headers": {
-    },
-    "multiValueHeaders": {  
-    },
-    "queryStringParameters": {
-        "title": "Enumでメソッドの実装"
-    },
-    "stageVariables": null,
-    "requestContext": {
-      "resourceId": "abcdef",
-      "resourcePath": "/blog/{id}",
-      "httpMethod": "GET",
-      "extendedRequestId": "request-id",
-      "requestTime": "02/Nov/2024:12:34:56 +0000",
-      "path": "/prod/blog/12345",
-      "accountId": "123456789012",
-      "protocol": "HTTP/1.1",
-      "stage": "prod",
-      "domainPrefix": "your-api-id",
-      "requestTimeEpoch": 1604328496000,
-      "requestId": "request-id",
-      "identity": {
-        "cognitoIdentityPoolId": null,
-        "accountId": null,
-        "cognitoIdentityId": null,
-        "caller": null,
-        "sourceIp": "123.123.123.123",
-        "principalOrgId": null,
-        "accessKey": null,
-        "cognitoAuthenticationType": null,
-        "cognitoAuthenticationProvider": null,
-        "userArn": null,
-        "userAgent": "PostmanRuntime/7.26.8",
-        "user": null
-      },
-      "domainName": "your-api-id.execute-api.us-east-1.amazonaws.com",
-      "apiId": "your-api-id"
-    },
-    "body": null,
-    "isBase64Encoded": false
+    "path": "/api/tag/認証/",
+    "httpMethod": "GET"
 }
   

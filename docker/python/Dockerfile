@@ -5,5 +5,5 @@ COPY app/lambda_function.py /var/task/
 
 RUN pip3 install --upgrade pip
 RUN pip3 install --upgrade setuptools
-RUN pip3 install python-lambda-local pymongo
+RUN pip3 install python-lambda-local pymongo jq
 CMD [ "lambda_function.handler" ]
