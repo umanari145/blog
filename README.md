@@ -53,6 +53,9 @@ python-lambda-local -f handler lambda_function.py event/(イベントファイ�
 
 ### infra(terraform)
 
+- dockerbuild.sh ecrのnull_resourceがあるためpushがされる
+- lambda.tf
+
 ```
 #最初だけ
 terraform init
@@ -82,3 +85,10 @@ https://qiita.com/hayaosato/items/d6049cf68c84a26845d2
 https://qiita.com/wwalpha/items/4a3e4f1f54e896633c01
 
 
+terraform import<br>
+すでに既存にリソースがある場合<br>
+terraform import (terraforのりソースの種類).(terraformのリソース名) リソースのID、名前などの何らかのユニーク情報
+```
+terraform import aws_cloudwatch_log_group.log_group :/aws/lambda/blogLambdaFunction:
+```
+https://zenn.dev/yumainaura/articles/qiita-2023-09-15t13_31_48-09_00
