@@ -8,7 +8,7 @@ data "archive_file" "archive_zip" {
 resource "aws_lambda_function" "blog_lambda" {
   filename         = data.archive_file.archive_zip.output_path
   function_name    = "blogLambdaFunction"
-  handler          = "app.lambda_handler"
+  handler          = "lambda_function.handler"
   runtime          = "python3.12"
   memory_size      = 128
   timeout          = 20
@@ -17,36 +17,6 @@ resource "aws_lambda_function" "blog_lambda" {
   # Define Lambda execution role
   role = aws_iam_role.lambda_exec_role.arn
 }
-
-resource "aws_iam_policy" "log_policy" {
-  name        = "log_policy"
-  path        = "/"
-  description = "IAM policy for logging from a lambda_app"
-
-  policy = jsonencode(
-    {
-      "Statement" : [
-        {
-          "Action" : "logs:CreateLogGroup",
-          "Effect" : "Allow",
-          "Resource" : "arn:aws:logs:${var.region}:${var.aws_account_id}:*"
-        },
-        {
-          "Action" : [
-            "logs:CreateLogStream",
-            "logs:PutLogEvents"
-          ],
-          "Effect" : "Allow",
-          "Resource" : [
-            "arn:aws:logs:${var.region}:${var.aws_account_id}:log-group:/aws/lambda/${aws_lambda_function.blog_lambda.function_name}:*"
-          ]
-        }
-      ],
-      "Version" : "2012-10-17"
-    }
-  )
-}
-
 
 # IAM Role for Lambda
 resource "aws_iam_role" "lambda_exec_role" {
@@ -72,11 +42,6 @@ resource "aws_iam_role_policy_attachments_exclusive" "managed_policy" {
   policy_arns = [
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   ]
-}
-
-resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
-  role       = aws_iam_role.lambda_exec_role.name
-  policy_arn = aws_iam_policy.log_policy.arn
 }
 
 # Lambda permission for API Gateway to invoke

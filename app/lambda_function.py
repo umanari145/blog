@@ -54,7 +54,7 @@ def check_url(path):
                 "$options": "s"
             }
             query["mode"] = "index"
-        elif re.search(r'\d{4}', pathes[1]) and re.search(r'\d{2}', pathes[2]) and re.search(r'\d{2}', pathes[3]) and pathes[4] is not "":
+        elif re.search(r'\d{4}', pathes[1]) and re.search(r'\d{2}', pathes[2]) and re.search(r'\d{2}', pathes[3]) and pathes[4] != "":
             where["date"] = "{0}-{1}-{2}".format(pathes[1], pathes[2], pathes[3])
             where["title"] = pathes[4]
             query["mode"] = "show"

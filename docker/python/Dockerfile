@@ -1,17 +1,9 @@
-FROM python:3.12
-USER root
+FROM public.ecr.aws/lambda/python:3.12
 
-RUN apt-get update
-RUN apt-get -y install locales && \
-    localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
-RUN apt-get -y install groff-base jq zip unzip
-ENV LANG ja_JP.UTF-8
-ENV LANGUAGE ja_JP:ja
-ENV LC_ALL ja_JP.UTF-8
-ENV TZ JST-9
-ENV TERM xterm
+RUN pip3 install --upgrade pip
+COPY app/lambda_function.py /var/task/
 
-RUN apt-get install -y vim less
-RUN pip install --upgrade pip
-RUN pip install --upgrade setuptools
-RUN pip install python-lambda-local pymongo
+RUN pip3 install --upgrade pip
+RUN pip3 install --upgrade setuptools
+RUN pip3 install python-lambda-local pymongo
+CMD [ "lambda_function.handler" ]
