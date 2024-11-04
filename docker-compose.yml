@@ -60,6 +60,13 @@ services:
     networks:
       - blog_node
 
+  python:
+    container_name: "blog_generator"
+    image: python:3.10-slim
+    volumes:
+      - ./:/app
+    tty: true
+
 networks:
   blog_node:
     driver: "bridge"

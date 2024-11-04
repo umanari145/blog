@@ -7,46 +7,42 @@ template_file_path = "resource_template.tf.j2"  # Terraformテンプレートフ
 output_file_path = "apigateway.tf"  # 出力ファイル名
 
 # Excelデータを読み込み
-data = pd.read_excel(excel_file_path)
+df = pd.read_excel(excel_file_path)
+# 一瞬で連想配列を作れる
+#data_list = df.to_dict(orient='records')
 
 # リソースとメソッドのリスト
 resources = []
 methods = []
-
 # 親リソースIDをトラッキングする辞書
 resource_ids = {"root": "aws_api_gateway_rest_api.example.root_resource_id"}
 
-# 各パスを処理
-for _, row in data.iterrows():
-    path = row['path'].strip("/")
-    method = row['method']
-    path_parts = path.split("/")
+def make_df_initial(df):
+    # pathの分割
+    df['pathes'] = df['path'].str.split("/")
+    # 最終パスの設定
+    df['last_path'] = df['pathes'].apply(lambda x: x[-1] if isinstance(x, list) else None)
+    return df
 
-    parent_id_var = "aws_api_gateway_rest_api.example.root_resource_id"
-    full_resource_name = "api"
+# 親子関係の設定
+def find_parent_id(df):
+    df['parent_id'] = None
+    for i, row in df.iterrows():
+        # 現在の行のpathesとlast_pathを取得
+        current_pathes = set(row['pathes'])
+        last_path = row['last_path']
+        # 他の行と比較して親を見つける
+        for j, potential_parent in df.iterrows():
+            if i != j:  # 自分自身との比較は避ける
+                # 親候補のpathesが現在のpathesの部分集合であり、差集合がlast_pathであるか確認
+                if current_pathes - set(potential_parent['pathes']) == {last_path}:
+                    df.at[i, 'parent_id'] = potential_parent['id']
+                    break  # 親が見つかったらループを抜ける
+    return df
 
-    # パスごとにリソースを作成
-    for part in path_parts:
-        resource_name = f"{full_resource_name}_{part.replace('{', '').replace('}', '')}"
-        
-        if resource_name not in resource_ids:
-            resources.append({
-                "name": resource_name,
-                "parent_id": parent_id_var,
-                "path_part": part
-            })
-            resource_ids[resource_name] = f"aws_api_gateway_resource.{resource_name}.id"
-
-        parent_id_var = resource_ids[resource_name]
-        full_resource_name = resource_name
-
-    # メソッドが指定されている場合、そのメソッドを追加
-    if pd.notna(method):
-        methods.append({
-            "resource_name": full_resource_name,
-            "http_method": method,
-            "resource_id": resource_ids[full_resource_name]
-        })
+df = make_df_initial(df)
+df = find_parent_id(df)   
+print(df)
 
 # Jinja2テンプレートの読み込み
 env = Environment(loader=FileSystemLoader('.'))
