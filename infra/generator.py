@@ -55,7 +55,6 @@ df["name"] = df['id'].apply(lambda x: 'api_' + str(x))
 
 # methodのみ
 method = df[df['method'].notna()]
-method = method[['method', 'id']]
 method = method.rename(columns={'method': 'http_method', 'id': 'resource_id'})
 
 # Jinja2テンプレートの読み込み
