@@ -3,8 +3,8 @@ from jinja2 import Environment, FileSystemLoader
 
 # 入力Excelファイルとテンプレート、出力ファイルの設定
 excel_file_path = "api_paths.xlsx"  # Excelファイル名
-template_file_path = "resource_template.tf.j2"  # Terraformテンプレートファイル
-output_file_path = "apigateway.tf"  # 出力ファイル名
+template_file_path = "template.tf.j2"  # Terraformテンプレートファイル
+output_file_path = "apigateway2.tf"  # 出力ファイル名
 
 # Excelデータを読み込み
 df = pd.read_excel(excel_file_path)
@@ -40,16 +40,33 @@ def find_parent_id(df):
                     break  # 親が見つかったらループを抜ける
     return df
 
+def make_template_data(df):
+    # pathの分割
+    df["name"] = df['id'].apply(lambda x: 'api_' + str(x))
+    df_with_method = df[df['method'].notna()]
+    return df
+
 df = make_df_initial(df)
 df = find_parent_id(df)   
-print(df)
+df = make_template_data(df)
+
+# nameの作成
+df["name"] = df['id'].apply(lambda x: 'api_' + str(x))
+
+# methodのみ
+method = df[df['method'].notna()]
+method = method[['method', 'id']]
+method = method.rename(columns={'method': 'http_method', 'id': 'resource_id'})
 
 # Jinja2テンプレートの読み込み
 env = Environment(loader=FileSystemLoader('.'))
 template = env.get_template(template_file_path)
 
 # テンプレートにリソースとメソッドのデータを渡してレンダリング
-terraform_code = template.render(resources=resources, methods=methods)
+terraform_code = template.render(
+    resources=df.to_dict(orient="records"), 
+    methods=method.to_dict(orient="records")
+)
 
 # Terraformファイルに書き出し
 with open(output_file_path, "w") as file:
