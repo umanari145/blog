@@ -1,125 +1,127 @@
 # API Gatewayの作成
 resource "aws_api_gateway_rest_api" "blog_api" {
-  name        = "skill-up-engineering.com"
-  description = "skill-up-engineering.comのAPI"
+  name        = "blog_api"
+  description = "skill-up-engineering.comのblog"
 }
 
-# API Gatewayリソースとパスの定義
-resource "aws_api_gateway_resource" "api" {
+
+resource "aws_api_gateway_resource" "api_1" {
   rest_api_id = aws_api_gateway_rest_api.blog_api.id
   parent_id   = aws_api_gateway_rest_api.blog_api.root_resource_id
   path_part   = "api"
 }
 
-resource "aws_api_gateway_resource" "api_category" {
+resource "aws_api_gateway_resource" "api_2" {
   rest_api_id = aws_api_gateway_rest_api.blog_api.id
-  parent_id   = aws_api_gateway_resource.api.id
+  parent_id   = aws_api_gateway_resource.api_1.id
   path_part   = "category"
 }
 
-resource "aws_api_gateway_resource" "api_category_id" {
+resource "aws_api_gateway_resource" "api_3" {
   rest_api_id = aws_api_gateway_rest_api.blog_api.id
-  parent_id   = aws_api_gateway_resource.api_category.id
+  parent_id   = aws_api_gateway_resource.api_2.id
   path_part   = "{category}"
 }
 
-resource "aws_api_gateway_resource" "api_tag" {
+resource "aws_api_gateway_resource" "api_4" {
   rest_api_id = aws_api_gateway_rest_api.blog_api.id
-  parent_id   = aws_api_gateway_resource.api.id
+  parent_id   = aws_api_gateway_resource.api_1.id
   path_part   = "tag"
 }
 
-resource "aws_api_gateway_resource" "api_tag_id" {
+resource "aws_api_gateway_resource" "api_5" {
   rest_api_id = aws_api_gateway_rest_api.blog_api.id
-  parent_id   = aws_api_gateway_resource.api_tag.id
+  parent_id   = aws_api_gateway_resource.api_4.id
   path_part   = "{tag}"
 }
 
-resource "aws_api_gateway_resource" "api_year" {
+resource "aws_api_gateway_resource" "api_6" {
   rest_api_id = aws_api_gateway_rest_api.blog_api.id
-  parent_id   = aws_api_gateway_resource.api.id
+  parent_id   = aws_api_gateway_resource.api_1.id
   path_part   = "{year}"
 }
 
-resource "aws_api_gateway_resource" "api_year_month" {
+resource "aws_api_gateway_resource" "api_7" {
   rest_api_id = aws_api_gateway_rest_api.blog_api.id
-  parent_id   = aws_api_gateway_resource.api_year.id
+  parent_id   = aws_api_gateway_resource.api_6.id
   path_part   = "{month}"
 }
 
-resource "aws_api_gateway_resource" "api_year_month_day" {
+resource "aws_api_gateway_resource" "api_8" {
   rest_api_id = aws_api_gateway_rest_api.blog_api.id
-  parent_id   = aws_api_gateway_resource.api_year_month.id
+  parent_id   = aws_api_gateway_resource.api_7.id
   path_part   = "{day}"
 }
 
-resource "aws_api_gateway_resource" "api_year_month_day_title" {
+resource "aws_api_gateway_resource" "api_9" {
   rest_api_id = aws_api_gateway_rest_api.blog_api.id
-  parent_id   = aws_api_gateway_resource.api_year_month_day.id
+  parent_id   = aws_api_gateway_resource.api_8.id
   path_part   = "{title}"
 }
 
-# 各リソースにGETメソッドを追加
-resource "aws_api_gateway_method" "api_category_id_get" {
+
+
+resource "aws_api_gateway_method" "api_3_get" {
   rest_api_id   = aws_api_gateway_rest_api.blog_api.id
-  resource_id   = aws_api_gateway_resource.api_category_id.id
+  resource_id   = aws_api_gateway_resource.api_3.id
   http_method   = "GET"
   authorization = "NONE"
 }
 
-resource "aws_api_gateway_method" "api_tag_id_get" {
+resource "aws_api_gateway_method" "api_5_get" {
   rest_api_id   = aws_api_gateway_rest_api.blog_api.id
-  resource_id   = aws_api_gateway_resource.api_tag_id.id
+  resource_id   = aws_api_gateway_resource.api_5.id
   http_method   = "GET"
   authorization = "NONE"
 }
 
-resource "aws_api_gateway_method" "api_year_month_get" {
+resource "aws_api_gateway_method" "api_7_get" {
   rest_api_id   = aws_api_gateway_rest_api.blog_api.id
-  resource_id   = aws_api_gateway_resource.api_year_month.id
+  resource_id   = aws_api_gateway_resource.api_7.id
   http_method   = "GET"
   authorization = "NONE"
 }
 
-resource "aws_api_gateway_method" "api_year_month_day_title_get" {
+resource "aws_api_gateway_method" "api_9_get" {
   rest_api_id   = aws_api_gateway_rest_api.blog_api.id
-  resource_id   = aws_api_gateway_resource.api_year_month_day_title.id
+  resource_id   = aws_api_gateway_resource.api_9.id
   http_method   = "GET"
   authorization = "NONE"
 }
 
-# Lambdaとのインテグレーション設定
-resource "aws_api_gateway_integration" "api_category_id_get_integration" {
+
+
+resource "aws_api_gateway_integration" "api_3_get" {
   rest_api_id             = aws_api_gateway_rest_api.blog_api.id
-  resource_id             = aws_api_gateway_resource.api_category_id.id
-  http_method             = aws_api_gateway_method.api_category_id_get.http_method
+  resource_id             = aws_api_gateway_resource.api_3.id
+  http_method             = aws_api_gateway_method.api_3_get.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.blog_lambda.invoke_arn
 }
 
-resource "aws_api_gateway_integration" "api_tag_id_get_integration" {
+resource "aws_api_gateway_integration" "api_5_get" {
   rest_api_id             = aws_api_gateway_rest_api.blog_api.id
-  resource_id             = aws_api_gateway_resource.api_tag_id.id
-  http_method             = aws_api_gateway_method.api_tag_id_get.http_method
+  resource_id             = aws_api_gateway_resource.api_5.id
+  http_method             = aws_api_gateway_method.api_5_get.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.blog_lambda.invoke_arn
 }
 
-resource "aws_api_gateway_integration" "api_year_month_get_integration" {
+resource "aws_api_gateway_integration" "api_7_get" {
   rest_api_id             = aws_api_gateway_rest_api.blog_api.id
-  resource_id             = aws_api_gateway_resource.api_year_month.id
-  http_method             = aws_api_gateway_method.api_year_month_get.http_method
+  resource_id             = aws_api_gateway_resource.api_7.id
+  http_method             = aws_api_gateway_method.api_7_get.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.blog_lambda.invoke_arn
 }
 
-resource "aws_api_gateway_integration" "api_year_month_day_title_get_integration" {
+resource "aws_api_gateway_integration" "api_9_get" {
   rest_api_id             = aws_api_gateway_rest_api.blog_api.id
-  resource_id             = aws_api_gateway_resource.api_year_month_day_title.id
-  http_method             = aws_api_gateway_method.api_year_month_day_title_get.http_method
+  resource_id             = aws_api_gateway_resource.api_9.id
+  http_method             = aws_api_gateway_method.api_9_get.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.blog_lambda.invoke_arn

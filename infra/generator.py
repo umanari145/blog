@@ -5,6 +5,9 @@ from jinja2 import Environment, FileSystemLoader
 excel_file_path = "api_paths.xlsx"  # Excelファイル名
 template_file_path = "template.tf.j2"  # Terraformテンプレートファイル
 output_file_path = "apigateway2.tf"  # 出力ファイル名
+api_name = "blog_api"
+description="skill-up-engineering.comのblog"
+
 
 # Excelデータを読み込み
 df = pd.read_excel(excel_file_path)
@@ -56,6 +59,8 @@ df["name"] = df['id'].apply(lambda x: 'api_' + str(x))
 # methodのみ
 method = df[df['method'].notna()]
 method = method.rename(columns={'method': 'http_method', 'id': 'resource_id'})
+integrations = method.rename(columns={'name': 'resource_name'})
+integrations['method_name'] = integrations.apply(lambda row: "{}_{}".format(row['resource_name'], row['http_method']), axis=1)
 
 # Jinja2テンプレートの読み込み
 env = Environment(loader=FileSystemLoader('.'))
@@ -63,8 +68,11 @@ template = env.get_template(template_file_path)
 
 # テンプレートにリソースとメソッドのデータを渡してレンダリング
 terraform_code = template.render(
+    api_name=api_name,
+    description=description,
     resources=df.to_dict(orient="records"), 
-    methods=method.to_dict(orient="records")
+    methods=method.to_dict(orient="records"),
+    integrations=integrations.to_dict(orient="records"),
 )
 
 # Terraformファイルに書き出し
