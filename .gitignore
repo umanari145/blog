@@ -2,6 +2,7 @@
 # dependencies
 /**/node_modules
 /**/output
+/**/blog_json
 /**/output_test
 .DS_Store
 .env*
