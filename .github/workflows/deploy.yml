@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t blog_python_lambda:latest .
+          docker build -t blog_python_lambda:latest -f docker/python/Dockerfile .
 
       - name: Tag Docker image for ECR
         run: |
