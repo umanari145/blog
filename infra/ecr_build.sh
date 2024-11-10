@@ -6,12 +6,12 @@
 source aws_configure.txt
 
 aws ecr create-repository \
-  --repository-name blog-lambda \
+  --repository-name blog_python_lambda \
   --image-tag-mutability MUTABLE \
   --image-scanning-configuration scanOnPush=true
 
 aws ecr put-lifecycle-policy \
-  --repository-name blog-lambda \
+  --repository-name blog_python_lambda \
   --lifecycle-policy-text file://aws_ecr_lifecycle_policy.json
 
 # Docker login
