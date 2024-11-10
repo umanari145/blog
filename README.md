@@ -2,6 +2,7 @@
 
 
 ## ディレクトリ構成
+- .github/workflows・・ecrへのプッシュ
 - app・・API部分(lambda)
 - docker・・Dockerファイル
 - front・・フロントエンド(react)
@@ -48,7 +49,7 @@ https://qiita.com/eiji-noguchi/items/e226ed7b8da2cd85a06a
 ```
 cd /root
 # -t timeout・・秒数　-e 環境変数
-python-lambda-local -f handler lambda_function.py event/(イベントファイル名).json -e env.json -t 10
+python-lambda-local -f handler lambda_function.py event/****.json -e env.json -t 10
 ```
 
 ### infra(terraform)
@@ -97,3 +98,12 @@ https://zenn.dev/yumainaura/articles/qiita-2023-09-15t13_31_48-09_00
 ### terraform documentDB
 
 https://github.com/clouddrove/terraform-aws-documentdb/tree/master
+
+## 環境変数登録(GithubActions)
+```
+gh auth login
+gh secret set AWS_ACCOUNT_ID --body "$AWS_ACCOUNT_ID" --repo umanari145/blog
+gh secret set AWS_ACCESS_KEY_ID --body "$AWS_ACCESS_KEY_ID" --repo umanari145/blog
+gh secret set AWS_SECRET_ACCESS_KEY --body "$AWS_SECRET_ACCESS_KEY" --repo umanari145/blog
+gh secret set AWS_REGION --body "$AWS_REGION" --repo umanari145/blog
+```
