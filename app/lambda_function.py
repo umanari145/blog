@@ -34,30 +34,31 @@ def check_url(path):
     pathes = path.split("/")
     query = {}
     where = {}
-    print(pathes)
-    if pathes[2] is not None:
-        if pathes[2] == "category":
+    start_path_index = int(os.getenv('START_PATH_INDEX'))
+    if pathes[start_path_index] is not None:
+        if pathes[start_path_index] == "category":
             # category
             where["categories"] = {
-                "$in":[pathes[3]]
+                "$in":[pathes[start_path_index+1]]
             }
             query["mode"] = "index"
-        elif pathes[2] == "tag":
+        elif pathes[start_path_index] == "tag":
             # tag
             where["tags"] = {
-                "$in":[pathes[3]]
+                "$in":[pathes[start_path_index+1]]
             } 
             query["mode"] = "index"
-        elif re.search(r'\d{4}', pathes[2]) and re.search(r'\d{2}', pathes[3]) and pathes[4] == "":
+        elif re.search(r'\d{4}', pathes[start_path_index]) and re.search(r'\d{2}', pathes[start_path_index+1]) and pathes[start_path_index+2] == "":
             # 日付
             where["date"] = {
-                "$regex": f'{pathes[1]}-{pathes[2]}.*' ,
+                "$regex": f'{pathes[start_path_index]}-{pathes[start_path_index+1]}.*' ,
                 "$options": "s"
             }
             query["mode"] = "index"
-        elif re.search(r'\d{4}', pathes[2]) and re.search(r'\d{2}', pathes[3]) and re.search(r'\d{2}', pathes[4]) and pathes[5] != "":
-            where["date"] = "{0}-{1}-{2}".format(pathes[2], pathes[3], pathes[4])
-            where["title"] = pathes[5]
+        elif re.search(r'\d{4}', pathes[start_path_index]) and re.search(r'\d{2}', pathes[start_path_index+1]) and re.search(r'\d{2}', pathes[start_path_index+2]) and pathes[start_path_index+3] != "":
+            # 詳細
+            where["date"] = "{0}-{1}-{2}".format(pathes[start_path_index], pathes[start_path_index+1], pathes[start_path_index+2])
+            where["title"] = pathes[start_path_index+3]
             query["mode"] = "show"
         else:
             #要改造
