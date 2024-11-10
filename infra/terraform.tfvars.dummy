@@ -2,3 +2,4 @@ aws_account_id=******
 region=******
 access_key=******
 secret_key=******
+doc_db_uri=********

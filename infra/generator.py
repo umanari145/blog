@@ -4,7 +4,7 @@ from jinja2 import Environment, FileSystemLoader
 # 入力Excelファイルとテンプレート、出力ファイルの設定
 excel_file_path = "api_paths.xlsx"  # Excelファイル名
 template_file_path = "template.tf.j2"  # Terraformテンプレートファイル
-output_file_path = "apigateway2.tf"  # 出力ファイル名
+output_file_path = "apigateway.tf"  # 出力ファイル名
 api_name = "blog_api"
 description="skill-up-engineering.comのblog"
 

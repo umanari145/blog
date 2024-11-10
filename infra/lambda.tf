@@ -4,9 +4,15 @@ resource "aws_lambda_function" "blog_lambda" {
   package_type     = "Image"
   image_uri        = "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/blog-lambda:latest"
   publish       = true
+  timeout = 10
 
   # Define Lambda execution role
   role = aws_iam_role.lambda_exec_role.arn
+  environment {
+		variables = {
+			DOC_DB_URI = var.doc_db_uri
+		}
+	}
 }
 
 # IAM Role for Lambda

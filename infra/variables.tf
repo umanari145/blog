@@ -17,3 +17,9 @@ variable "secret_key" {
   description = "secret_key"
   type        = string
 }
+
+
+variable "doc_db_uri" {
+  description = "doc_db_uri"
+  type        = string
+}
