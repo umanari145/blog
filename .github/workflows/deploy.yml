@@ -35,3 +35,9 @@ jobs:
       - name: Push Docker image to ECR
         run: |
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/blog_python_lambda:latest
+
+      - name: Update Lambda Function
+        run: |
+          aws lambda update-function-code \
+          --function-name blogLambdaFunction \
+          --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/blog_python_lambda:latest

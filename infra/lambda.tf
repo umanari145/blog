@@ -2,15 +2,17 @@
 resource "aws_lambda_function" "blog_lambda" {
   function_name    = "blogLambdaFunction"
   package_type     = "Image"
-  image_uri        = "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/blog-lambda:latest"
+  image_uri        = "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/blog_python_lambda:latest"
   publish       = true
   timeout = 10
 
   # Define Lambda execution role
   role = aws_iam_role.lambda_exec_role.arn
   environment {
-		variables = {
-			DOC_DB_URI = var.doc_db_uri
+    variables = {
+      DOC_DB_USER = var.doc_db_user
+      DOC_DB_PASS = var.doc_db_pass
+      START_INDEX_PATH = var.start_path_index
 		}
 	}
 }

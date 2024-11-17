@@ -58,6 +58,16 @@ node delete_contents.js
 
 ```
 
+### mongodbの実環境
+
+https://www.mongodb.com/ja-jp
+
+MFA搭載(emailにワンタイムトークン)
+
+#### アクセス制限
+
+「Security」→「Network Access」→「IP Access List」でIPアドレス制限をかけられる
+
 ### app(lambda)
 
 https://www.distant-view.co.jp/column/6484/<br>
@@ -70,6 +80,13 @@ cd /root
 # -t timeout・・秒数　-e 環境変数
 python-lambda-local -f handler lambda_function.py event/****.json -e env.json -t 10
 ```
+
+テスト
+```
+docker exec -it blog_python_lambda bash
+python lambda_function_test.py 
+```
+
 
 ### infra(terraform)
 
