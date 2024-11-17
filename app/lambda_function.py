@@ -2,12 +2,16 @@
 import os
 import json
 import re
+import urllib
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from bson import json_util
 
 # DocumentDB クライアントの設定
-client = MongoClient(os.getenv('DOC_DB_URI'))
+doc_db_user = urllib.parse.quote_plus(os.getenv('DOC_DB_USER'))
+doc_db_pass = urllib.parse.quote_plus(os.getenv('DOC_DB_PASS'))
+url = 'mongodb+srv://%s:%s@skill-up-engineering.q3kqc.mongodb.net/' % (doc_db_user, doc_db_pass)
+client = MongoClient(url)
 db = client["blog"] #DB名を設定
 collection = db.get_collection("posts")
 per_one_page = 10

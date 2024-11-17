@@ -19,7 +19,17 @@ variable "secret_key" {
 }
 
 
-variable "doc_db_uri" {
-  description = "doc_db_uri"
+variable "doc_db_user" {
+  description = "doc_db_user"
+  type        = string
+}
+
+variable "doc_db_pass" {
+  description = "doc_db_pass"
+  type        = string
+}
+
+variable "start_path_index" {
+  description = "start_path_index"
   type        = string
 }

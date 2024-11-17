@@ -15,7 +15,27 @@ class TestBlogHandler(unittest.TestCase):
         query = check_url(path)
         self.assertEqual(query["mode"], "index")
         self.assertEqual(query["where"]["categories"]["$in"], ["technology"])
-    
+
+    def test_check_url_for_category_page(self):
+        os.environ['START_PATH_INDEX'] = '3'
+        path = "/prod/api/category/technology/page/4"
+        query = check_url(path)
+        self.assertEqual(query["current_page"], "4")
+
+    def test_check_url_for_tag(self):
+        os.environ['START_PATH_INDEX'] = '3'
+        path = "/prod/api/tag/プロジェクト"
+        query = check_url(path)
+        self.assertEqual(query["mode"], "index")        
+        self.assertEqual(query["where"]["tags"]["$in"], ["プロジェクト"])
+
+    def test_check_url_for_tag_pager(self):
+        os.environ['START_PATH_INDEX'] = '3'
+        path = "/prod/api/tag/プロジェクト/page/4"
+        query = check_url(path)
+        self.assertEqual(query["mode"], "index")
+        self.assertEqual(query["current_page"], "4")
+
     #@patch("blog_handler.collection")
     #def test_get_blog_found(self, mock_collection):
     #    # モックでfind_oneを設定
@@ -134,4 +154,5 @@ class TestBlogHandler(unittest.TestCase):
     #    self.assertIn("not found", response["body"])
 
 if __name__ == "__main__":
-    unittest.main(defaultTest="TestBlogHandler.test_check_url_for_category")
+    unittest.main()
+ 

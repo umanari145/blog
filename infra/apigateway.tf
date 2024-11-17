@@ -127,6 +127,7 @@ resource "aws_api_gateway_integration" "api_9_get" {
   uri                     = aws_lambda_function.blog_lambda.invoke_arn
 }
 
+
 resource "aws_api_gateway_deployment" "blog_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.blog_api.id
   stage_name  = "prod"

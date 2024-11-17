@@ -12,3 +12,5 @@
 /**/*.tfvars
 /**/.terraform*
 /**/aws_configure.txt
+infra/terraform.tfstate
+infra/terraform.tfstate.backup
