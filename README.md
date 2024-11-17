@@ -9,6 +9,25 @@
 - infra・・インフラ(terraform)
 - mongo・・mongo
 
+### infra
+- api_paths.xlsx・・APIGatewayのパス情報をここから展開
+- apigateway.tf・・APIGatewayのtfファイル
+- ecr_build.sh・・ECRの構築とイメージのpush。`bash ecr_builds.sh`でECR作成とコンテナイメージのpush
+- generator.py・・apigateway.tfを作成するためのツール　コンテナ内で以下コマンドで`cd /app/infra && python generator.py`でtfファイル作成
+- lambda.tf・・lambdaのtfファイル
+- provider.tf・・providerの設定ファイル
+- template.tf.j2・・generatorのtemplate。ここをgeneratorはここを経由してtfファイルを作成する
+- terraform.tfstate・・terraformの状態 
+- terraform.tfstate.backup・・terraformの状態(backup)
+- terraform.tfvars.dummy・・terraformの変数(dummyがない方の拡張子が実際の値)
+- variables.tf・・terraform内で使う変数の定義
+- aws_configure.txt.default・・awsの設定情報。ecr_build.shで使用(.defautがない方の拡張子が実施の値)
+
+#### 実際のコマンド
+
+1. `bash ecr_build`
+2. `terraform apply -var-file terraform.tfvars` で構築
+3. 構築後は`.github/workflows/deploy.yml`で更新が走る
 
 ### mongoのdbのセットアップ
 
