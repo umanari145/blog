@@ -12,7 +12,7 @@ resource "aws_lambda_function" "blog_lambda" {
     variables = {
       DOC_DB_USER = var.doc_db_user
       DOC_DB_PASS = var.doc_db_pass
-      START_INDEX_PATH = var.start_path_index
+      START_PATH_INDEX = var.start_path_index
 		}
 	}
 }

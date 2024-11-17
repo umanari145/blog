@@ -20,6 +20,7 @@ def handler(event, context):
     method = event['httpMethod']
     if method == 'GET':
         query = check_url(event["path"])
+        print(query)
         if  query["mode"] == "show":
             return get_blog(query)
         elif query["mode"] == "index":
