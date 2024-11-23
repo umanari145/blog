@@ -2,64 +2,74 @@ import { Footer } from "../layout/Footer";
 import { Header } from "../layout/Header";
 import { Sidebar } from "../layout/Sidebar";
 import axios from 'axios'
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Post } from "../class/Post";
+import { Pagination } from "../parts/Pagination";
+import moment from "moment";
 
 export const Top = () => {
 
-  console.log(process.env.REACT_APP_API_ENDPOINT)
- 
+  const [posts, setPosts] = useState<Post[]>([]);
+	const [total_pages, setTotalPage] = useState<number>();
+	const [current_page, setCurrentPage] = useState<number>();
+
   useEffect(() => {
     getPosts();
   }, []);
 
   const getPosts = async () => {
     try {
-      // package.jsonでproxyで定義しておき、かつここを相対URLにしておくことでCORSのエラーが発生しない
-      const data = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}api/category/perl`,{ 
-        headers: { "Content-Type": "application/json" }
-      })
-      console.log("----")
-      console.log(data);
-      console.log("aaaaaa")
+       const {data, status} = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}api/category/javascript`)
+      if (status === 200) {
+
+				// dateの値を変換
+				const parseItems = (posts:Post[]):Post[] => {
+					return posts.map((post:Post) => {
+						const parsedDate = new Date(post.date);
+						return {
+							...post,
+							date: parsedDate,
+						};
+					});
+				};
+
+				setPosts(parseItems(data.items));
+				// たとえばページ読み込み順の関係からこの部分だたのtotal_page=data.total_pagesだと反映されない
+				setTotalPage(data.total_pages)
+				setCurrentPage(data.current_page)
+      }
     } catch (error) {
       console.error('Error fetching data: ', error);
     }
+  };
+
+	const handlePageChange = async(page:number) => {
+		console.log("クリック" + page)
   };
 
   return (
     <>
       <Header></Header>
       <div className="container">
-        <section className="posts">
-          <article className="post">
-            <h2 className="post-title">
-              <a href="#">Reactの基礎を学ぶ</a>
-            </h2>
-            <p className="post-date">2024年11月23日</p>
-            <p className="post-excerpt">
-              Reactの基本的なコンセプトを解説します。初心者にもわかりやすい内容です。
-            </p>
-          </article>
-          <article className="post">
-            <h2 className="post-title">
-              <a href="#">CSS Gridでレイアウトを作る</a>
-            </h2>
-            <p className="post-date">2024年11月20日</p>
-            <p className="post-excerpt">
-              CSS
-              Gridを使って効率的にウェブサイトのレイアウトを構築する方法を紹介します。
-            </p>
-          </article>
-          <article className="post">
-            <h2 className="post-title">
-              <a href="#">Dockerの基本操作</a>
-            </h2>
-            <p className="post-date">2024年11月18日</p>
-            <p className="post-excerpt">
-              Dockerを初めて使う方向けに、基本的な操作を詳しく解説します。
-            </p>
-          </article>
-        </section>
+				<section className="posts">
+					{posts.map((post:Post) => (
+					<article className="post">
+						<h2 className="post-title">
+							<a href={`${process.env.REACT_APP_API_ENDPOINT}api/${moment(post.date).format('YYYY/MM/DD')}/${post.title}`}>{post.title}</a>
+						</h2>
+						<p className="post-date">{moment(post.date).format('YYYY/MM/DD')}</p>
+						<p className="post-excerpt">
+							{post.body.slice(0,200)}
+						</p>
+					</article>	 
+					))}
+					<Pagination
+        		totalPages={total_pages!}
+        		currentPage={current_page!}
+        		onPageChange={handlePageChange}
+      		/>
+				</section>
+
         <Sidebar></Sidebar>
       </div>
       <Footer></Footer>
