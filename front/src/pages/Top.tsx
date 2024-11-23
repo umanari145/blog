@@ -1,8 +1,31 @@
 import { Footer } from "../layout/Footer";
 import { Header } from "../layout/Header";
 import { Sidebar } from "../layout/Sidebar";
+import axios from 'axios'
+import { useEffect } from "react";
 
 export const Top = () => {
+
+  console.log(process.env.REACT_APP_API_ENDPOINT)
+ 
+  useEffect(() => {
+    getPosts();
+  }, []);
+
+  const getPosts = async () => {
+    try {
+      // package.jsonでproxyで定義しておき、かつここを相対URLにしておくことでCORSのエラーが発生しない
+      const data = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}api/category/perl`,{ 
+        headers: { "Content-Type": "application/json" }
+      })
+      console.log("----")
+      console.log(data);
+      console.log("aaaaaa")
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+    }
+  };
+
   return (
     <>
       <Header></Header>
