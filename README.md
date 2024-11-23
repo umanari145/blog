@@ -9,6 +9,25 @@
 - infra・・インフラ(terraform)
 - mongo・・mongo
 
+
+全体イメージ
+
+
+### front
+
+プロジェクトスタート
+```
+docker exec -it blog_node sh
+pwd /app
+# プロジェクトの作成
+npx create-react-app front --template typescript
+frontディレクトリ以下にプロジェクト作られる
+cd front
+npm start ここでホットリロードができる
+
+http://localhost:3000/ でアクセスできる
+```
+
 ### infra
 - api_paths.xlsx・・APIGatewayのパス情報をここから展開
 - apigateway.tf・・APIGatewayのtfファイル
@@ -23,7 +42,7 @@
 - variables.tf・・terraform内で使う変数の定義
 - aws_configure.txt.default・・awsの設定情報。ecr_build.shで使用(.defautがない方の拡張子が実施の値)
 
-#### 実際のコマンド
+#### 実際の構築コマンド
 
 1. `bash ecr_build`
 2. `terraform apply -var-file terraform.tfvars` で構築
@@ -57,7 +76,6 @@ node load_contents.js
 node delete_contents.js
 
 ```
-
 ### mongodbの実環境
 
 https://www.mongodb.com/ja-jp
@@ -76,7 +94,8 @@ https://qiita.com/eiji-noguchi/items/e226ed7b8da2cd85a06a
 
 ローカルデバッグ
 ```
-cd /root
+# -f function・・軌道関数
+# -e environment・・環境変数
 # -t timeout・・秒数　-e 環境変数
 python-lambda-local -f handler lambda_function.py event/****.json -e env.json -t 10
 ```
