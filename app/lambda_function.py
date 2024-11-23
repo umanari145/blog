@@ -160,8 +160,8 @@ def respond(status_code, body):
         "statusCode": status_code,
         "body": json.dumps(body, default=json_util.default, ensure_ascii=False),
         'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE'
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Origin":"*",
+            "Access-Control-Allow-Methods":"OPTIONS,POST,GET,PUT,DELETE"
         },
     }
