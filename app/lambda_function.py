@@ -20,7 +20,6 @@ def handler(event, context):
     method = event['httpMethod']
     if method == 'GET':
         query = check_url(event["path"])
-        print(query)
         if  query["mode"] == "show":
             return get_blog(query)
         elif query["mode"] == "index":
@@ -160,7 +159,9 @@ def respond(status_code, body):
     return {
         "statusCode": status_code,
         "body": json.dumps(body, default=json_util.default, ensure_ascii=False),
-        "headers": {
-            "Content-Type": "application/json"
-        }
+        'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE'
+        },
     }
