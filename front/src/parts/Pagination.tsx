@@ -7,6 +7,7 @@ type Props = {
 };
 
 export const Pagination : FC<Props> = ({ totalPages, currentPage, onPageChange }) => {
+  
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
     
   return (

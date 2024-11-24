@@ -1,8 +1,9 @@
 export type Post = {
   _id: string;
   title: string;
-  body: string;
+  contents: string;
+  post_no:string;
   categories: string[];
   tags: string[];
-  date: Date;
+  post_date: Date;
 };

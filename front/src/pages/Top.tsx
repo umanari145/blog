@@ -19,13 +19,13 @@ export const Top = () => {
 
   const getPosts = async () => {
     try {
-       const {data, status} = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}api/category/javascript`)
+       const {data, status} = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/`)
       if (status === 200) {
 
 				// dateの値を変換
 				const parseItems = (posts:Post[]):Post[] => {
 					return posts.map((post:Post) => {
-						const parsedDate = new Date(post.date);
+						const parsedDate = new Date(post.post_date);
 						return {
 							...post,
 							date: parsedDate,
@@ -55,11 +55,11 @@ export const Top = () => {
 					{posts.map((post:Post) => (
 					<article className="post">
 						<h2 className="post-title">
-							<a href={`${process.env.REACT_APP_API_ENDPOINT}api/${moment(post.date).format('YYYY/MM/DD')}/${post.title}`}>{post.title}</a>
+							<a href={`${process.env.REACT_APP_DOMAIN}/${moment(post.post_date).format('YYYY/MM/DD')}/${post.post_no}`}>{post.title}</a>
 						</h2>
-						<p className="post-date">{moment(post.date).format('YYYY/MM/DD')}</p>
+						<p className="post-date">{moment(post.post_date).format('YYYY/MM/DD')}</p>
 						<p className="post-excerpt">
-							{post.body.slice(0,200)}
+							{post.contents?.slice(0,200)}
 						</p>
 					</article>	 
 					))}
