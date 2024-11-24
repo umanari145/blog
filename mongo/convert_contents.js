@@ -57,7 +57,7 @@ async function migrateData() {
     await mongoClient.connect();
     const mongoDb = mongoClient.db(mongoDbName);
 
-    await mongoDb.collection("labels").insertMany(terms2);
+    //await mongoDb.collection("labels").insertMany(terms2);
     // データを変換してMongoDBに挿入
     let count = 0;
     let posts_for_insert = [];
@@ -77,7 +77,7 @@ async function migrateData() {
         title: post.post_title,
         contents: post.post_content,
         post_date:moment(post.post_date).format('YYYY-MM-DD'),
-        post_no:post.ID,
+        post_no:"post-" + post.ID,
         categories: _.map((postCategoryIds['category']), 'term_taxonomy_id'),
         tags: _.map((postCategoryIds['post_tag']), 'term_taxonomy_id')
       };
