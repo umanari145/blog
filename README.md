@@ -15,6 +15,14 @@
 
 ### front
 
+- public・・成果物が展開される
+- src・・実際のreactのソースが入っている
+    - class・・型
+    - layout・・htmlのパーツ
+    - pages・・routeから飛んできた時のページ
+    - parts・・Paginationなどのhtmlのパーツ
+    - App.tsx・・エントリーポイント
+
 プロジェクトスタート
 ```
 docker exec -it blog_node sh
@@ -53,7 +61,8 @@ http://localhost:3000/ でアクセスできる
 - init/createDB.js データベースやユーザー作成
 - output ブログデータ
 - output_test ブログテストデータ
-- load_contents.js データ読み込み
+- convet_contents.js データ読み込みとmongoへの直投入
+- load_contents.js データ読み込み(markdownからの読み込み)
 - delete_contents.js データ全削除
 
 ```

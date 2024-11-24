@@ -42,27 +42,26 @@ def check_url(path):
     if pathes[start_path_index] is not None:
         if pathes[start_path_index] == "category":
             # category
-            where["categories"] = {
-                "$in":[pathes[start_path_index+1]]
-            }
+            query["pipeline"] = make_pipeline("categories", "category", pathes[start_path_index+1])
             query["mode"] = "index"
         elif pathes[start_path_index] == "tag":
             # tag
-            where["tags"] = {
-                "$in":[pathes[start_path_index+1]]
-            } 
+            query["pipeline"] = make_pipeline("tags", "post_tag", pathes[start_path_index+1])
             query["mode"] = "index"
         elif re.search(r'\d{4}', pathes[start_path_index]) and re.search(r'\d{2}', pathes[start_path_index+1]) and pathes[start_path_index+2] == "":
             # 日付
-            where["date"] = {
+            where["post_date"] = {
                 "$regex": f'{pathes[start_path_index]}-{pathes[start_path_index+1]}.*' ,
                 "$options": "s"
             }
             query["mode"] = "index"
         elif re.search(r'\d{4}', pathes[start_path_index]) and re.search(r'\d{2}', pathes[start_path_index+1]) and re.search(r'\d{2}', pathes[start_path_index+2]) and pathes[start_path_index+3] != "":
             # 詳細
-            where["date"] = "{0}-{1}-{2}".format(pathes[start_path_index], pathes[start_path_index+1], pathes[start_path_index+2])
-            where["title"] = pathes[start_path_index+3]
+            where["post_date"] = "{0}-{1}-{2}".format(pathes[start_path_index], pathes[start_path_index+1], pathes[start_path_index+2])
+            where["$or"] = [
+                { "title": pathes[start_path_index+3]},
+                { "post_no": pathes[start_path_index+3]}
+            ]
             query["mode"] = "show"
         else:
             #要改造
@@ -70,8 +69,32 @@ def check_url(path):
 
     current_page = check_pager(pathes)
     query["where"] = where
+    print(query)
     query["current_page"] = current_page
     return query
+
+def make_pipeline(taxonomy_type, taxonomy_key, keyword):
+    return [
+        {
+            "$lookup": {
+                "from": "labels",
+                "localField": taxonomy_type,
+                "foreignField": "no",
+                "as": "details"
+            }
+        },
+        {
+            "$match": {
+                "details.name": keyword,
+                "details.type": taxonomy_key
+            }
+        },
+        {
+            "$sort": {
+                "post_date": -1
+            }
+        }
+    ]
 
 def check_pager(pathes):
     current_page = 1
@@ -96,8 +119,11 @@ def get_blog(query):
 
 def get_blogs(query):    
     try:
-        if collection.count_documents(query["where"]) > 0:
-            blogs = collection.find(query["where"]).sort("date", -1)
+        if "pipeline" in query:
+            blogs = list(collection.aggregate(query["pipeline"]))
+        else:
+            blogs = list(collection.find(query["where"]).sort("post_date", -1))
+        if len(blogs) > 0:
             res = get_contents_inc_page(list(blogs), query["current_page"])
             return respond(200, res)
         else:
