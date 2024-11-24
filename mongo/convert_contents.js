@@ -2,7 +2,7 @@ import mysql from 'mysql2/promise';
 import _ from 'lodash';
 import { MongoClient } from 'mongodb';
 import 'dotenv/config'
-
+import moment from "moment";
 
 async function migrateData() {
   // MySQLの接続情報
@@ -26,9 +26,9 @@ async function migrateData() {
 
     // MySQLからデータを取得
     const [posts] = await mysqlConnection.query("SELECT * FROM wp_posts WHERE post_status = 'publish'");
-    const [terms] = await mysqlConnection.query('SELECT t.term_id,t.name,tt.taxonomy FROM wp_terms t LEFT JOIN wp_term_taxonomy tt ON t.term_id = tt.term_id');
+    const [terms] = await mysqlConnection.query('SELECT t.term_id, LOWER(t.name) as name ,tt.taxonomy FROM wp_terms t LEFT JOIN wp_term_taxonomy tt ON t.term_id = tt.term_id');
     const [postTerms] = await mysqlConnection.query('SELECT * FROM wp_term_relationships ');
-    
+
     // カテゴリIDと名前のマップを作成
     const temrMap = {}
     terms.forEach((term) => {
@@ -57,7 +57,7 @@ async function migrateData() {
     await mongoClient.connect();
     const mongoDb = mongoClient.db(mongoDbName);
 
-    //await mongoDb.collection("labels").insertMany(terms2);
+    await mongoDb.collection("labels").insertMany(terms2);
     // データを変換してMongoDBに挿入
     let count = 0;
     let posts_for_insert = [];
@@ -76,7 +76,7 @@ async function migrateData() {
       const post_c = {    
         title: post.post_title,
         contents: post.post_content,
-        post_date:post.post_date,
+        post_date:moment(post.post_date).format('YYYY-MM-DD'),
         post_no:post.ID,
         categories: _.map((postCategoryIds['category']), 'term_taxonomy_id'),
         tags: _.map((postCategoryIds['post_tag']), 'term_taxonomy_id')
