@@ -2,31 +2,42 @@ import { Footer } from "../layout/Footer";
 import { Header } from "../layout/Header";
 import { Sidebar } from "../layout/Sidebar";
 import '../Detail.css'
+import axios from 'axios'
+import { useEffect, useState } from "react";
+import { useParams } from 'react-router-dom'
+import { Post } from "../class/Post";
+import moment from "moment";
 
 export const Detail = () => {
+  const {post_key} = useParams();
+  const [post, setPost] = useState<Post>();
+
+  useEffect(() => {
+    getPost(post_key);
+  }, [post_key]);
+
+  const getPost = async(post_key?:string) => {
+    try {
+      const {data, status} = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/blogs/${post_key}`)
+      if (status === 200) {
+        let res_item = JSON.parse(data.body)
+        res_item.date = new Date(res_item.post_date)
+        console.log(res_item)
+        setPost(res_item)
+      }
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+    }
+  }
+
   return (
     <>
       <Header></Header>
       <div className="container">
         <article className="post-detail">
-          <h1 className="post-title">Reactの基礎を学ぶ</h1>
-          <p className="post-date">2024年11月23日</p>
-          <div className="post-content">
-            <p>
-              ReactはFacebookが開発したJavaScriptライブラリで、シングルページアプリケーションの構築に役立ちます。本記事では、Reactの基本概念、コンポーネント、状態管理について解説します。
-            </p>
-            <h2>Reactの特徴</h2>
-            <p>
-              Reactはコンポーネントベースのアプローチを採用しており、再利用可能なコードを効率的に作成できます。また、仮想DOMを使用することで、高速なUIレンダリングが可能です。
-            </p>
-            <h2>コンポーネントの基本</h2>
-            <p>
-              Reactでは、UIを小さな部品であるコンポーネントに分割して構築します。以下は簡単な例です：
-            </p>
-            <pre>
-              echo hello world
-            </pre>
-          </div>
+          <h1 className="post-title">{post?.title}</h1>
+          <p className="post-date">{moment(post?.post_date).format('YYYY年MM月DD日')}</p>
+          <div className="post-content" dangerouslySetInnerHTML={{ __html: post?.contents}}></div>
         </article>
         <Sidebar></Sidebar>
       </div>

@@ -1,5 +1,6 @@
 /* 記事詳細 */
 .post-detail {
+  width: 80%;
   margin-bottom: 40px;
   border: 1px solid #eaeaea;
   border-radius: 8px;

@@ -1,7 +1,8 @@
 export type Post = {
   _id: string;
   title: string;
-  contents: string;
+  // dangerouslySetInnerHTMLでTrustedHTMLに適用するためにanyにしておく
+  contents: any;
   post_no:string;
   categories: string[];
   tags: string[];

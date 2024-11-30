@@ -17,24 +17,28 @@ export const Top = () => {
     getPosts();
   }, []);
 
-  const getPosts = async () => {
+  const getPosts = async (page_no?:number) => {
+    let page_no_query = page_no ? `?page_no=${page_no}` : ""
+
     try {
-       const {data, status} = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/`)
+       const {data, status} = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/blogs${page_no_query}`)
       if (status === 200) {
+		  	let res_items = JSON.parse(data.body)
 				// dateの値を変換
 				const parseItems = (posts:Post[]):Post[] => {
 					return posts.map((post:Post) => {
 						const parsedDate = new Date(post.post_date);
 						return {
 							...post,
+              contents: post.contents?.slice(0, 100),
 							date: parsedDate,
 						};
 					});
 				};
-				setPosts(parseItems(data.items));
+				setPosts(parseItems(res_items.items));
 				// たとえばページ読み込み順の関係からこの部分だたのtotal_page=data.total_pagesだと反映されない
-				setTotalPage(data.total_pages)
-				setCurrentPage(data.current_page)
+				setTotalPage(parseInt(res_items.total_pages))
+				setCurrentPage(parseInt(res_items.current_page))
       }
     } catch (error) {
       console.error('Error fetching data: ', error);
@@ -42,7 +46,7 @@ export const Top = () => {
   };
 
 	const handlePageChange = async(page:number) => {
-		console.log("クリック" + page)
+    getPosts(page)
   };
 
   return (
@@ -56,8 +60,7 @@ export const Top = () => {
 							<a href={`${process.env.REACT_APP_DOMAIN}/${moment(post.post_date).format('YYYY/MM/DD')}/${post.post_no}`}>{post.title}</a>
 						</h2>
 						<p className="post-date">{moment(post.post_date).format('YYYY/MM/DD')}</p>
-						<p className="post-excerpt">
-							{post.contents?.slice(0,200)}
+						<p className="post-excerpt" dangerouslySetInnerHTML={{ __html: post?.contents}}>
 						</p>
 					</article>	 
 					))}
