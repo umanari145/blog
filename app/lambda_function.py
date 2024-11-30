@@ -19,54 +19,29 @@ db = client["blog"] #DB名を設定
 collection = db.get_collection("posts")
 per_one_page = 10
 
-def handler(event, context):
-    method = event['httpMethod']
-    if method == 'GET':
-        query = check_url(event)
-        if  query["mode"] == "show":
-            return get_blog(query)
-        elif query["mode"] == "index":
-            return get_blogs(query)
-    #elif method == 'POST':
-    #    return create_blog(event)
-    #elif method == 'PUT':
-    #    return update_blog(blog_id, event)
-    #elif method == 'DELETE':
-    #    return delete_blog(blog_id)
-    else:
-        return respond(405, {"error": "Method Not Allowed"})
 
-def check_url(event):
-
-    pathes = event["path"].split("/")
+def make_query():
+    category = app.current_event.get_query_string_value(name="category", default_value="")
+    tag = app.current_event.get_query_string_value(name="tag", default_value="")
+    year = app.current_event.get_query_string_value(name="year", default_value="")
+    month = app.current_event.get_query_string_value(name="month", default_value="")
+    search_word = app.current_event.get_query_string_value(name="month", default_value="")
     query = {}
     where = {}
+    if category:
+        query["pipeline"] = make_pipeline("categories", "category", category)
+    elif tag:
+        query["pipeline"] = make_pipeline("tags", "post_tag", tag)
+    elif year and month:
+        # 日付
+        where["post_date"] = {
+            "$regex": f'{year}-{month}.*' ,
+            "$options": "s"
+        }
+    elif search_word:
+        print("実装予定")
 
-    print(pathes)
-    exit(0)
-    if "queryStringParameters" in event:
-        query["mode"] = "index"
-        if "category" in event["queryStringParameters"]:
-            # category
-            query["pipeline"] = make_pipeline("categories", "category", event["queryStringParameters"]["category"])
-        elif "tag" in event["queryStringParameters"]:
-            # tag
-            query["pipeline"] = make_pipeline("tags", "post_tag", event["queryStringParameters"]["tag"])
-        elif "year" in event["queryStringParameters"] and "month" in event["queryStringParameters"]:
-            # 日付
-            where["post_date"] = {
-                "$regex": f'{event["queryStringParameters"]["year"]}-{event["queryStringParameters"]["month"]}.*' ,
-                "$options": "s"
-            }
-        elif "search_word" in event["queryStringParameters"]:
-            # 詳細
-            # 実装
-            print("実装予定")
-    else:
-        #topページはここ
-        query["mode"] = "index"
-
-    current_page = check_pager(event)
+    current_page = app.current_event.get_query_string_value(name="page_no", default_value=1)
     query["where"] = where
     query["current_page"] = current_page
     print(query)
@@ -95,17 +70,12 @@ def make_pipeline(taxonomy_type, taxonomy_key, keyword):
         }
     ]    
 
-def check_pager(event):
-    current_page = 1
-    if "queryStringParameters" in event:
-        if "page_no" in event["queryStringParameters"]:
-            current_page = int(event["queryStringParameters"]["page_no"])
-    return current_page
 
 
-def get_blog(query):
+@app.get("/api/blogs/<post_no>")
+def get_blog(post_no):
     try:
-        blog = collection.find_one(query["where"])
+        blog = collection.find_one({"post_no": post_no})
         if blog:
             return respond(200, blog)
         else:
@@ -113,7 +83,9 @@ def get_blog(query):
     except Exception as e:
         return respond(500, {"error": str(e)})
 
-def get_blogs(query):    
+@app.get("/api/blogs")
+def get_blogs():
+    query = make_query()
     try:
         offset = (int(query["current_page"]) - 1) * per_one_page
         if "pipeline" in query:
@@ -143,36 +115,39 @@ def make_response(items, query):
         "per_one_page": per_one_page
     }
 
-def create_blog(event):
-    try:
-        data = json.loads(event['body'])
-        result = collection.insert_one(data)
-        data['_id'] = str(result.inserted_id)
-        return respond(201, {"message": "Blog created", "data": data})
-    except Exception as e:
-        return respond(500, {"error": str(e)})
+#def create_blog(event):
+#    try:
+#        data = json.loads(event['body'])
+#        result = collection.insert_one(data)
+#        data['_id'] = str(result.inserted_id)
+#        return respond(201, {"message": "Blog created", "data": data})
+#    except Exception as e:
+#        return respond(500, {"error": str(e)})
+#
+#def update_blog(blog_id, event):
+#    try:
+#        data = json.loads(event['body'])
+#        result = collection.update_one(
+#            {"_id": blog_id},
+#            {"$set": data}
+#        )
+#        if result.matched_count == 0:
+#            return respond(404, {"error": "Blog not found"})
+#        return respond(200, {"message": "Blog updated"})
+#    except Exception as e:
+#        return respond(500, {"error": str(e)})
+#
+#def delete_blog(blog_id):
+#    try:
+#        result = collection.delete_one({"_id": blog_id})
+#        if result.deleted_count == 0:
+#            return respond(404, {"error": "Blog not found"})
+#        return respond(200, {"message": "Blog deleted"})
+#    except Exception as e:
+#        return respond(500, {"error": str(e)})
 
-def update_blog(blog_id, event):
-    try:
-        data = json.loads(event['body'])
-        result = collection.update_one(
-            {"_id": blog_id},
-            {"$set": data}
-        )
-        if result.matched_count == 0:
-            return respond(404, {"error": "Blog not found"})
-        return respond(200, {"message": "Blog updated"})
-    except Exception as e:
-        return respond(500, {"error": str(e)})
-
-def delete_blog(blog_id):
-    try:
-        result = collection.delete_one({"_id": blog_id})
-        if result.deleted_count == 0:
-            return respond(404, {"error": "Blog not found"})
-        return respond(200, {"message": "Blog deleted"})
-    except Exception as e:
-        return respond(500, {"error": str(e)})
+def handler(event, context):
+    return app.resolve(event, context)
 
 def respond(status_code, body):
     return {
