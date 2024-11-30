@@ -12,7 +12,6 @@ resource "aws_lambda_function" "blog_lambda" {
     variables = {
       DOC_DB_USER = var.doc_db_user
       DOC_DB_PASS = var.doc_db_pass
-      START_PATH_INDEX = var.start_path_index
 		}
 	}
 }

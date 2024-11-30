@@ -1,7 +1,7 @@
 export const Header = () => {
   return (
     <header className="App-header">
-      <img src="./head_capture.jpg" className="App-logo" alt="https://skill-up-engineering.com/" />
+      <img src={`${process.env.REACT_APP_DOMAIN}/head_capture.jpg`} className="App-logo" alt="https://skill-up-engineering.com/" />
     </header>
   );
 };

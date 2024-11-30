@@ -1,4 +1,5 @@
 import {FC } from 'react';
+import _ from 'lodash';
 
 type Props = {
   totalPages:number;
@@ -7,8 +8,14 @@ type Props = {
 };
 
 export const Pagination : FC<Props> = ({ totalPages, currentPage, onPageChange }) => {
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-    
+  
+  let pages:number[] = [];
+  let lastPageNumber:number;
+
+  lastPageNumber = (currentPage + 10 < totalPages) ? currentPage + 10 : totalPages;
+
+  pages = _.range(currentPage, lastPageNumber);
+
   return (
     <div style={styles.paginationContainer}>
       <button
