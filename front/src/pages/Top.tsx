@@ -21,7 +21,6 @@ export const Top = () => {
     try {
        const {data, status} = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/`)
       if (status === 200) {
-
 				// dateの値を変換
 				const parseItems = (posts:Post[]):Post[] => {
 					return posts.map((post:Post) => {
@@ -32,7 +31,6 @@ export const Top = () => {
 						};
 					});
 				};
-
 				setPosts(parseItems(data.items));
 				// たとえばページ読み込み順の関係からこの部分だたのtotal_page=data.total_pagesだと反映されない
 				setTotalPage(data.total_pages)
