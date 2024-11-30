@@ -7,8 +7,10 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 from bson import json_util
 from aws_lambda_powertools.event_handler import APIGatewayRestResolver
+from aws_lambda_powertools.event_handler.api_gateway import CORSConfig
 
-app = APIGatewayRestResolver()
+cors_config = CORSConfig(allow_origin="*", max_age=300)
+app = APIGatewayRestResolver(cors=cors_config)
 
 # DocumentDB クライアントの設定
 doc_db_user = urllib.parse.quote_plus(os.getenv('DOC_DB_USER'))
@@ -153,9 +155,4 @@ def respond(status_code, body):
     return {
         "statusCode": status_code,
         "body": json.dumps(body, default=json_util.default, ensure_ascii=False),
-        'headers': {
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Origin":"*",
-            "Access-Control-Allow-Methods":"OPTIONS,POST,GET,PUT,DELETE"
-        },
     }
