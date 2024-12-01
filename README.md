@@ -159,10 +159,6 @@ terraform import aws_cloudwatch_log_group.log_group :/aws/lambda/blogLambdaFunct
 https://zenn.dev/yumainaura/articles/qiita-2023-09-15t13_31_48-09_00
 
 
-### terraform documentDB
-
-https://github.com/clouddrove/terraform-aws-documentdb/tree/master
-
 ## 環境変数登録(GithubActions)
 ```
 gh auth login
