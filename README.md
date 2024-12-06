@@ -9,10 +9,13 @@
 - infra・・インフラ(terraform)
 - mongo・・mongo
 
+### GitHubActions
 
-全体イメージ
-
-
+- CI/CDのワークフロー
+    1. mainブランチへのマージ
+    2. ECRにログイン
+    3. ImageのPush
+    4. Lambdaの更新
 ### front
 
 - public・・成果物が展開される
@@ -87,6 +90,12 @@ node delete_contents.js
 ```
 ### mongodbの実環境
 
+- ドキュメント型のデータベース
+- JSONをそのままの形式で保存できる
+- RDBに比べて低コスト
+- トランザクションがない&複雑なJOINが難しい
+- 拡張性が容易でデータ増加に強い
+
 https://www.mongodb.com/ja-jp
 
 MFA搭載(emailにワンタイムトークン)
@@ -96,6 +105,13 @@ MFA搭載(emailにワンタイムトークン)
 「Security」→「Network Access」→「IP Access List」でIPアドレス制限をかけられる
 
 ### app(lambda)
+
+- サーバーレスのFaaS
+- 短時間のバッチやAPIなど
+
+ライブラリ
+- pymongo・・mongoDBとpythonを繋ぐライブラリ
+- aws_lambda_powertools.event_handler・・routingが便利
 
 https://www.distant-view.co.jp/column/6484/<br>
 https://qiita.com/eiji-noguchi/items/e226ed7b8da2cd85a06a
@@ -157,7 +173,6 @@ terraform import (terraforのりソースの種類).(terraformのリソース名
 terraform import aws_cloudwatch_log_group.log_group :/aws/lambda/blogLambdaFunction:
 ```
 https://zenn.dev/yumainaura/articles/qiita-2023-09-15t13_31_48-09_00
-
 
 ## 環境変数登録(GithubActions)
 ```
