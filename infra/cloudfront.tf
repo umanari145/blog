@@ -33,6 +33,15 @@ resource "aws_cloudfront_distribution" "main" {
       restriction_type = "none"
     }
   }
+
+  #S3にアクセスしているのでroutingでトップ以外は403になってしまうが
+  #SPAなので全てindexに飛ばす
+  custom_error_response {
+    error_code            = 403
+    response_code         = 200
+    response_page_path    = "/index.html" # トップページにリダイレクト
+  }
+
   viewer_certificate {
     cloudfront_default_certificate = true
   }
