@@ -39,6 +39,13 @@ npm start ここでホットリロードができる
 http://localhost:3000/ でアクセスできる
 ```
 
+ビルド&成果物のデプロイ
+```
+cd /app/front
+npm run build
+# dockerの外
+aws s3 sync build s3://skill-up-engineering
+```
 ### infra
 - api_paths.xlsx・・APIGatewayのパス情報をここから展開
 - apigateway.tf・・APIGatewayのtfファイル
@@ -59,7 +66,7 @@ http://localhost:3000/ でアクセスできる
 2. `terraform apply -var-file terraform.tfvars` で構築
 3. 構築後は`.github/workflows/deploy.yml`で更新が走る
 
-### mongoのdbのセットアップ
+### mongoのdbのセットアップ 
 
 - init/createDB.js データベースやユーザー作成
 - output ブログデータ
@@ -166,6 +173,7 @@ https://qiita.com/hayaosato/items/d6049cf68c84a26845d2
 https://qiita.com/wwalpha/items/4a3e4f1f54e896633c01
 
 
+
 terraform import<br>
 すでに既存にリソースがある場合<br>
 terraform import (terraforのりソースの種類).(terraformのリソース名) リソースのID、名前などの何らかのユニーク情報
@@ -174,6 +182,9 @@ terraform import aws_cloudwatch_log_group.log_group :/aws/lambda/blogLambdaFunct
 ```
 https://zenn.dev/yumainaura/articles/qiita-2023-09-15t13_31_48-09_00
 
+### cloudflount
+https://hisuiblog.com/react-terraform-cloudfront-s3-deploy/<br>
+https://github.com/hisuihisui/terraform_aws_deploy_practice
 ## 環境変数登録(GithubActions)
 ```
 gh auth login

@@ -8,6 +8,12 @@ variable "region" {
   type        = string
 }
 
+variable "domain_name" {
+  description = "domain_name"
+  type        = string
+}
+
+
 variable "access_key" {
   description = "access_key"
   type        = string
