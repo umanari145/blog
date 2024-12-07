@@ -9,10 +9,13 @@
 - infra・・インフラ(terraform)
 - mongo・・mongo
 
+### GitHubActions
 
-全体イメージ
-
-
+- CI/CDのワークフロー
+    1. mainブランチへのマージ
+    2. ECRにログイン
+    3. ImageのPush
+    4. Lambdaの更新
 ### front
 
 - public・・成果物が展開される
@@ -36,6 +39,13 @@ npm start ここでホットリロードができる
 http://localhost:3000/ でアクセスできる
 ```
 
+ビルド&成果物のデプロイ
+```
+cd /app/front
+npm run build
+# dockerの外
+aws s3 sync build s3://skill-up-engineering
+```
 ### infra
 - api_paths.xlsx・・APIGatewayのパス情報をここから展開
 - apigateway.tf・・APIGatewayのtfファイル
@@ -56,7 +66,7 @@ http://localhost:3000/ でアクセスできる
 2. `terraform apply -var-file terraform.tfvars` で構築
 3. 構築後は`.github/workflows/deploy.yml`で更新が走る
 
-### mongoのdbのセットアップ
+### mongoのdbのセットアップ 
 
 - init/createDB.js データベースやユーザー作成
 - output ブログデータ
@@ -87,6 +97,12 @@ node delete_contents.js
 ```
 ### mongodbの実環境
 
+- ドキュメント型のデータベース
+- JSONをそのままの形式で保存できる
+- RDBに比べて低コスト
+- トランザクションがない&複雑なJOINが難しい
+- 拡張性が容易でデータ増加に強い
+
 https://www.mongodb.com/ja-jp
 
 MFA搭載(emailにワンタイムトークン)
@@ -96,6 +112,13 @@ MFA搭載(emailにワンタイムトークン)
 「Security」→「Network Access」→「IP Access List」でIPアドレス制限をかけられる
 
 ### app(lambda)
+
+- サーバーレスのFaaS
+- 短時間のバッチやAPIなど
+
+ライブラリ
+- pymongo・・mongoDBとpythonを繋ぐライブラリ
+- aws_lambda_powertools.event_handler・・routingが便利
 
 https://www.distant-view.co.jp/column/6484/<br>
 https://qiita.com/eiji-noguchi/items/e226ed7b8da2cd85a06a
@@ -150,6 +173,7 @@ https://qiita.com/hayaosato/items/d6049cf68c84a26845d2
 https://qiita.com/wwalpha/items/4a3e4f1f54e896633c01
 
 
+
 terraform import<br>
 すでに既存にリソースがある場合<br>
 terraform import (terraforのりソースの種類).(terraformのリソース名) リソースのID、名前などの何らかのユニーク情報
@@ -158,11 +182,9 @@ terraform import aws_cloudwatch_log_group.log_group :/aws/lambda/blogLambdaFunct
 ```
 https://zenn.dev/yumainaura/articles/qiita-2023-09-15t13_31_48-09_00
 
-
-### terraform documentDB
-
-https://github.com/clouddrove/terraform-aws-documentdb/tree/master
-
+### cloudflount
+https://hisuiblog.com/react-terraform-cloudfront-s3-deploy/<br>
+https://github.com/hisuihisui/terraform_aws_deploy_practice
 ## 環境変数登録(GithubActions)
 ```
 gh auth login
