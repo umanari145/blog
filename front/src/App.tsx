@@ -8,11 +8,11 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" Component={Top} />
-          <Route path="/category/:category" Component={Top} />
-          <Route path="/tag/:tag" Component={Top} />
-          <Route path="/:year/:month" Component={Top} />
-          <Route path="/:year/:month/:day/:post_key" Component={Detail} />
+          <Route path={`/`} Component={Top} />
+          <Route path={`/category/:category`} Component={Top} />
+          <Route path={`/tag/:tag`} Component={Top} />
+          <Route path={`/:year/:month`} Component={Top} />
+          <Route path={`/:year/:month/:day/:post_key`} Component={Detail} />
         </Routes>
       </BrowserRouter>            
     </div>
