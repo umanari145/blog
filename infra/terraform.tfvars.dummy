@@ -1,8 +1,0 @@
-aws_account_id=******
-region=******
-domain_name=*************
-access_key=******
-secret_key=******
-doc_db_user=*********
-doc_db_pass=**********
-start_path_index=*
